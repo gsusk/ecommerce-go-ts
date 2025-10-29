@@ -17,46 +17,46 @@ func (svc UserService) Login(params any) (string, error) {
 	return "", nil
 }
 
-func (svc UserService) VerificationCode(params any) (string, error) {
+func (svc UserService) VerificationCode(u domain.User) (int, error) {
+	return 1, nil
+}
+
+func (svc UserService) VerifyCode(id uint, code int) error {
+	return nil
+}
+
+func (svc UserService) CreateProfile(id uint, input any) error {
+	return nil
+}
+
+func (svc UserService) GetProfile(id uint) (*domain.User, error) {
+	return nil, nil
+}
+
+func (svc UserService) UpdateProfile(id uint, data any) error {
+	return nil
+}
+
+func (svc UserService) BecomeSeller(id uint, data any) (string, error) {
 	return "", nil
 }
 
-func (svc UserService) VerifyCode(params any) (string, error) {
+func (svc UserService) FindCart(id uint) ([]any, error) {
+	return nil, nil
+}
+
+func (svc UserService) CreateCart(data any, user domain.User) (any, error) {
 	return "", nil
 }
 
-func (svc UserService) CreateProfile(params any) (string, error) {
-	return "", nil
-}
-
-func (svc UserService) GetProfile(params any) (string, error) {
-	return "", nil
-}
-
-func (svc UserService) UpdateProfile(params any) (string, error) {
-	return "", nil
-}
-
-func (svc UserService) BecomeSeller(params any, data any) (string, error) {
-	return "", nil
-}
-
-func (svc UserService) FindCart(id uint) (any, error) {
-	return "", nil
-}
-
-func (svc UserService) CreateCart(data any, user domain.User) (string, error) {
-	return "", nil
-}
-
-func (svc UserService) CreateOrder(u domain.User) (string, error) {
-	return "", nil
+func (svc UserService) CreateOrder(u domain.User) (int, error) {
+	return 0, nil
 }
 
 func (svc UserService) GetOrders(u domain.User) (any, error) {
 	return nil, nil
 }
 
-func (svc UserService) GetOrderById(id uint) (any, error) {
+func (svc UserService) GetOrderById(id uint, uId uint) (any, error) {
 	return nil, nil
 }
