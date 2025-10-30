@@ -1,6 +1,10 @@
 package service
 
-import "go-ecommerce-app/internal/domain"
+import (
+	"go-ecommerce-app/internal/domain"
+	"go-ecommerce-app/internal/dto"
+	"log"
+)
 
 type UserService struct {
 }
@@ -9,7 +13,8 @@ func (svc UserService) FindUserByEmail(email string) (*domain.User, error) {
 	return nil, nil
 }
 
-func (svc UserService) Signup(params any) (string, error) {
+func (svc UserService) Signup(params dto.UserSignUp) (string, error) {
+	log.Panicln(params)
 	return "", nil
 }
 

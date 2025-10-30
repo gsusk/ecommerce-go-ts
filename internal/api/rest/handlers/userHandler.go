@@ -1,19 +1,26 @@
 package handlers
 
 import (
+	"fmt"
 	"go-ecommerce-app/internal/api/rest"
+	"go-ecommerce-app/internal/dto"
+	"go-ecommerce-app/internal/service"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type UserHandler struct {
-	//svc UserSvc
+	svc service.UserService
 }
 
 func SetupUserRoutes(handl *rest.RestHandler) {
 	app := handl.App
+	svc := service.UserService{}
 
-	handler := UserHandler{}
+	handler := &UserHandler{
+		svc,
+	}
 
 	app.Post("/register", handler.Register)
 	app.Post("/login", handler.Login)
@@ -32,7 +39,34 @@ func SetupUserRoutes(handl *rest.RestHandler) {
 }
 
 func (h *UserHandler) Register(ctx *fiber.Ctx) error {
-	return nil
+	fmt.Printf("%p\n", ctx)
+	fmt.Printf("%p\n", h)
+	fmt.Printf("%p\n", &h.svc)
+
+	user := dto.UserSignUp{}
+	err := ctx.BodyParser(&user)
+	fmt.Println("HEH")
+	if err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "invalid input please try again",
+		})
+	}
+
+	token, err := h.svc.Signup(user)
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(
+			&fiber.Map{
+				"message": "unexpected server error trying to signup",
+			},
+		)
+	}
+
+	return ctx.Status(http.StatusInternalServerError).JSON(
+		&fiber.Map{
+			"message": token,
+		},
+	)
+
 }
 
 func (h *UserHandler) Login(ctx *fiber.Ctx) error {
