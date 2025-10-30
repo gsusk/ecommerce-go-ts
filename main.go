@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"go-ecommerce-app/config"
 	"go-ecommerce-app/internal/api"
 	"log"
@@ -13,6 +12,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error setting up environment: %v\n", err)
 	}
-	fmt.Println("ads")
+
 	api.StartServer(cfg)
 }
