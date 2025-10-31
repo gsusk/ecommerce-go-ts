@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"fmt"
 	"go-ecommerce-app/internal/api/rest"
 	"go-ecommerce-app/internal/dto"
+	"go-ecommerce-app/internal/repository"
 	"go-ecommerce-app/internal/service"
 	"net/http"
 
@@ -16,7 +16,10 @@ type UserHandler struct {
 
 func SetupUserRoutes(handl *rest.RestHandler) {
 	app := handl.App
-	svc := service.UserService{}
+
+	svc := service.UserService{
+		Repo: repository.NewUserRepository(handl.DB),
+	}
 
 	handler := &UserHandler{
 		svc,
@@ -39,13 +42,9 @@ func SetupUserRoutes(handl *rest.RestHandler) {
 }
 
 func (h *UserHandler) Register(ctx *fiber.Ctx) error {
-	fmt.Printf("%p\n", ctx)
-	fmt.Printf("%p\n", h)
-	fmt.Printf("%p\n", &h.svc)
-
 	user := dto.UserSignUp{}
 	err := ctx.BodyParser(&user)
-	fmt.Println("HEH")
+
 	if err != nil {
 		return ctx.Status(http.StatusBadRequest).JSON(&fiber.Map{
 			"message": "invalid input please try again",
@@ -61,7 +60,7 @@ func (h *UserHandler) Register(ctx *fiber.Ctx) error {
 		)
 	}
 
-	return ctx.Status(http.StatusInternalServerError).JSON(
+	return ctx.Status(http.StatusCreated).JSON(
 		&fiber.Map{
 			"message": token,
 		},
@@ -70,7 +69,29 @@ func (h *UserHandler) Register(ctx *fiber.Ctx) error {
 }
 
 func (h *UserHandler) Login(ctx *fiber.Ctx) error {
-	return nil
+	user := dto.UserLogin{}
+	err := ctx.BodyParser(&user)
+
+	if err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "invalid input please try again",
+		})
+	}
+
+	token, err := h.svc.Login(user.Email, user.Password)
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(
+			&fiber.Map{
+				"message": "unexpected server error trying to login",
+			},
+		)
+	}
+
+	return ctx.Status(http.StatusInternalServerError).JSON(
+		&fiber.Map{
+			"message": token,
+		},
+	)
 }
 
 func (h *UserHandler) GetVerificationCode(ctx *fiber.Ctx) error {
